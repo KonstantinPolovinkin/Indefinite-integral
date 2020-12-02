@@ -1,0 +1,36 @@
+{
+  "name": "indefinite-integral",
+  "version": "1.0.0",
+  "description": "Allows to solve standard indefinite integrals",
+  "main": "server.js",
+  "scripts": {
+    "test": "eslint .",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KonstantinPolovinkin/Indefinite-integral.git"
+  },
+  "keywords": [
+    "standard",
+    "indefinite",
+    "integrals"
+  ],
+  "author": "Konstantin Polovinkin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/KonstantinPolovinkin/Indefinite-integral/issues"
+  },
+  "homepage": "https://github.com/KonstantinPolovinkin/Indefinite-integral#readme",
+  "dependencies": {
+    "server": "^1.0.31",
+    "ws": "^7.4.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.14.0",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1"
+  }
+}

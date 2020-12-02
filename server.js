@@ -1,23 +1,28 @@
+/* eslint-disable linebreak-style */
+/* eslint-disable template-curly-spacing */
+/* eslint-disable max-len */
+/* eslint-disable camelcase */
 'use strict';
 
-const WebSocket = require("ws");
+const WebSocket = require('ws');
 const port = 5000;
 const server = new WebSocket.Server({ port });
 
-server.on("connection", ws => {
-  ws.on("message", message => {
-    if (message === 'exit'){
-      ws.close()
+server.on('connection', ws => {
+  ws.on('message', message => {
+    if (message === 'exit') {
+      ws.close();
     } else {
       server.clients.forEach(client => {
         if (client.readyState === WebSocket.OPEN) {
-          client.send( (defineIntegralType(message)) );
+          client.send((defineIntegralType(message)));
           //client.send(`${message} + 1`);
         }
       });
     }
   });
-  ws.send("Input integral to solve");  
+  const newLocal = 'Input integral to solve';
+  ws.send(newLocal);
 });
 
 
@@ -29,23 +34,23 @@ function stringReplaceSymbol(value) {
   //value = value.replace(/\*/g, ' ');
   //value = value.replace(/\//g, ' ');
   value = value.replace(/\+/g, ' ');
-  return(value);    
+  return (value);
 }
 
 function stringSplit(value) {
   value = value.split(/\s/g);
 
-  value.forEach(function(item, itemIndex) {
+  value.forEach((item, itemIndex) => {
     if (item.includes('$')) {
-      let newItem = item.replace('$', '^(-');
-      value.splice(itemIndex, 1, newItem)
-    };
+      const newItem = item.replace('$', '^(-');
+      value.splice(itemIndex, 1, newItem);
+    }
   });
   return value;
 }
 
 function getEnteredData(message) {
-  let enteredData = stringSplit(stringReplaceSymbol(message));
+  const enteredData = stringSplit(stringReplaceSymbol(message));
   return enteredData;
 }
 
@@ -54,65 +59,65 @@ function getDifferential() {
 }
 
 function zeroIntegral() {
-  return('C');
+  return ('C');
 }
 
 function constantIntegral(value) {
-  return( value + getDifferential() + ' + C' );
+  return (value + getDifferential() + ' + C');
 }
 
 function exponentIntegral(value) {
-  let exponentDetermination = () => {
-    let calculateExponent = eval(value.slice(value.indexOf('^') + 2, value.indexOf(')')));
-    return(
+  const exponentDetermination = () => {
+    const calculateExponent = eval(value.slice(value.indexOf('^') + 2, value.indexOf(')')));
+    return (
       Math.round(calculateExponent * 1000) / 1000
     );
   };
-  return( `(${value.slice(0, value.indexOf('^'))}^${Math.round((exponentDetermination() + 1) * 1000) / 1000} / ${Math.round((exponentDetermination() + 1) * 1000) / 1000}) + C`);
+  return (`(${value.slice(0, value.indexOf('^'))}^${Math.round((exponentDetermination() + 1) * 1000) / 1000} / ${Math.round((exponentDetermination() + 1) * 1000) / 1000}) + C`);
 }
 
 function logarithmicIntegral(value) {
-  let nonIntegrandConstant = `(${ value.slice(0, value.indexOf('/')) } / ${ value.slice(value.indexOf('(') + 1, value.indexOf('x') + 1) })`;
-  let integrationVariable = getDifferential();
+  const nonIntegrandConstant = `(${ value.slice(0, value.indexOf('/')) } / ${ value.slice(value.indexOf('(') + 1, value.indexOf('x') + 1) })`;
+  const integrationVariable = getDifferential();
   //let integrationVariable = value.slice(value.indexOf('x'), value.indexOf('x') + 1);
-  return( `${nonIntegrandConstant} * ln|${integrationVariable}| + C`);
+  return (`${nonIntegrandConstant} * ln|${integrationVariable}| + C`);
 }
 
 function exponentialFunctionIntegral_type1(value) {
-  let numerator = value;
-  let denominator = value.slice(0, value.indexOf('^'));
+  const numerator = value;
+  const denominator = value.slice(0, value.indexOf('^'));
 
-  return( `${numerator} / (ln|${denominator}|) + C`);
+  return (`${numerator} / (ln|${denominator}|) + C`);
 }
 
 function exponentialFunctionIntegral_type2(value) {
-  let result = value.slice(0);
-  return(`${result} + C`);
+  const result = value.slice(0);
+  return (`${result} + C`);
 }
 
 function sinIntegral_type1(value) {
-  let integrationVariable = value.slice(value.indexOf('(') + 1, value.indexOf(')'));
-  return(`-(${ value.slice(0, value.indexOf('s')) })cos${integrationVariable} + C`);
+  const integrationVariable = value.slice(value.indexOf('(') + 1, value.indexOf(')'));
+  return (`-(${ value.slice(0, value.indexOf('s')) })cos${integrationVariable} + C`);
 }
 
 function cosIntegral_type1(value) {
-  let integrationVariable = value.slice(value.indexOf('(') + 1, value.indexOf(')'));
-  return(`(${ value.slice(0, value.indexOf('c')) })sin${integrationVariable} + C`);
+  const integrationVariable = value.slice(value.indexOf('(') + 1, value.indexOf(')'));
+  return (`(${ value.slice(0, value.indexOf('c')) })sin${integrationVariable} + C`);
 }
 
 function sinIntegral_type2(value) {
-  let integrationVariable = value.slice(value.indexOf(')') + 2, value.indexOf('x') + 1);
-  return(`-${ value.slice(0, value.indexOf('s')) }ctg(${integrationVariable}) + C`);
+  const integrationVariable = value.slice(value.indexOf(')') + 2, value.indexOf('x') + 1);
+  return (`-${ value.slice(0, value.indexOf('s')) }ctg(${integrationVariable}) + C`);
 }
 
 function cosIntegral_type2(value) {
-  let integrationVariable = value.slice(value.indexOf(')') + 2, value.indexOf('x') + 1);
-  return(`${ value.slice(0, value.indexOf('c')) }tg(${integrationVariable}) + C`);
+  const integrationVariable = value.slice(value.indexOf(')') + 2, value.indexOf('x') + 1);
+  return (`${ value.slice(0, value.indexOf('c')) }tg(${integrationVariable}) + C`);
 }
 
 function defineIntegralType(message) {
-  let arr = [];
-  for (let item of getEnteredData(message)) {
+  const arr = [];
+  for (const item of getEnteredData(message)) {
     if (!item.includes('x') && !item.includes('0')) {
       arr.push(constantIntegral(item));
 
@@ -143,6 +148,6 @@ function defineIntegralType(message) {
     } else if (item.includes('cos^')) {
       arr.push(cosIntegral_type2(item));
     }
-  };
+  }
   return arr.join(', ');
 }
